@@ -130,7 +130,19 @@ const preview = document.getElementById('preview');
 const previewImage = document.getElementById('previewImage');
 
 let selectedImage = null;
+const STORAGE_KEY = 'fubinyan_chat_history';
 
+function saveHistory() {
+  localStorage.setItem(STORAGE_KEY, chat.innerHTML);
+}
+
+function loadHistory() {
+  const history = localStorage.getItem(STORAGE_KEY);
+  if (history) {
+    chat.innerHTML = history;
+    scrollDown();
+  }
+}
 function scrollDown(){
   window.scrollTo({
     top:document.body.scrollHeight,
@@ -172,6 +184,7 @@ function addMessage(text, me, imageData = null){
   row.appendChild(content);
   chat.appendChild(row);
   scrollDown();
+  saveHistory();
 }
 
 function reply(text, hasImage){
@@ -279,6 +292,7 @@ document.getElementById('form').addEventListener('submit',e=>{
     addMessage(reply(text, Boolean(image)), false);
   },700 + Math.random()*500);
 });
+  loadHistory();
 </script>
 </body>
 </html>
