@@ -191,48 +191,48 @@ function reply(text, hasImage){
   const t = text.trim();
 
   if(hasImage && !t) return '你傳了什麼？我看看。';
-  if(/在嗎|在不在/.test(t)) return '在。怎麼了？';
-  if(/你好|嗨|哈囉/.test(t)) return '嗯，怎麼突然找我？';
-  if(/幹嘛|在幹嘛|做什麼/.test(t))
-    return '沒幹嘛。怎樣，你有事找我？';
+
+  if(/在嗎|在不在/.test(t))
+    return '在。怎麼了？';
+
+  if(/你好|嗨|哈囉/.test(t))
+    return '嗯？怎麼突然找我？';
+
   if(/累|好煩|不開心|難過|委屈/.test(t))
-    return '怎麼了？發生什麼事了？慢慢說。';
+    return '怎麼了？誰惹你不高興了？跟我說說。';
+
   if(/哭|想哭/.test(t))
-    return '……先別急。誰惹你了？';
+    return '先別急，發生什麼事了？';
+
   if(/作業|考試|讀書/.test(t))
-    return '又是學校的事？哪裡不會？';
-  if(/吃飯|吃了嗎/.test(t))
-    return '吃了。你呢？別又忘記吃飯。';
-  if(/晚安/.test(t)) return '嗯，晚安。明天再聊。';
-  if(/早安|早上好/.test(t)) return '早。今天起得挺早。';
-  if(/哈哈|笑死|好好笑/.test(t))
-    return '有這麼好笑？說來聽聽。';
-  if(/謝謝/.test(t)) return '小事，不用一直謝。';
-  if(/對不起|抱歉/.test(t)) return '嗯，我聽著。你先說清楚。';
+    return '又在忙這些？哪題不會，拿來我看看。';
+
   if(/生氣|討厭/.test(t))
-    return '怎麼了？突然這麼大火氣。';
+    return '怎麼突然這麼大火氣？';
+
   if(/想你|想我/.test(t))
     return '……怎麼突然講這個？';
+
   if(/喜歡你|喜歡我/.test(t))
-    return '……你怎麼突然講這個？';
+    return '……你怎麼突然說這個？';
+
   if(/照片|圖片|看看/.test(t) && hasImage)
-    return '看到了。你怎麼突然傳這個？';
-  if(hasImage) return '看到了。這是什麼？跟我說說。';
-  if(t.length <= 4) return '嗯？然後呢？';
-  if(/[？?]$/.test(t)) return '你先說說你的想法，我聽著。';
-  if(/！|!/.test(t)) return '怎麼這麼激動？發生什麼事了？';
+    return '看到了。你想讓我看哪裡？';
 
-  const responses = [
-    '嗯，我聽著。你繼續說。',
-    '然後呢？後來怎麼了？',
-    '是嗎？你怎麼想的？',
-    '……行，你接著說。',
-    '你今天話挺多。繼續，我在聽。',
-    '所以你想跟我說的是這個？'
-  ];
-  return responses[Math.floor(Math.random()*responses.length)];
+  if(hasImage)
+    return '看到了。這是什麼？跟我說說。';
+
+  if(t.length <= 4)
+    return '嗯？然後呢？';
+
+  if(/[？?]/.test(t))
+    return '你先說說你的想法，我聽著。';
+
+  if(/！|!/.test(t))
+    return '怎麼這麼激動？發生什麼事了？';
+
+  return '嗯，我在聽。你繼續說。';
 }
-
 document.getElementById('imageButton').addEventListener('click',()=>{
   imageInput.click();
 });
