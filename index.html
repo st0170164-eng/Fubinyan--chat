@@ -10,59 +10,80 @@
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif;
-  background:#f5f2ef;
-  color:#292929;
+  background:#f5f3f0;color:#292929;
 }
 header{
-  background:#fff;
-  padding:18px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  border-bottom:1px solid #eee;
-  position:sticky;top:0;
+  position:sticky;top:0;z-index:2;
+  background:#fff;padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid #e8e5e2;
 }
 .avatar{
-  width:44px;height:44px;border-radius:50%;
-  background:#d8d4d0;display:grid;place-items:center;
-  font-size:20px;
+  width:46px;height:46px;border-radius:50%;
+  background:#dedbd7;display:grid;place-items:center;
+  font-size:21px;font-weight:600;
 }
 header h3{margin:0;font-size:17px}
-header small{color:#888}
-#chat{
-  padding:18px 14px 100px;
-  max-width:650px;margin:auto;
-}
-.date{text-align:center;color:#999;font-size:12px;margin:12px}
-.msg{display:flex;gap:8px;margin:18px 0;align-items:flex-end}
+header small{display:block;color:#777;margin-top:4px}
+#chat{padding:16px 14px 18px;max-width:680px;margin:auto}
+.date{text-align:center;color:#777;font-size:12px;margin:12px}
+.msg{display:flex;margin:16px 0;align-items:flex-end}
 .msg.me{justify-content:flex-end}
+.msg.them{justify-content:flex-start}
 .bubble{
-  max-width:78%;padding:12px 15px;border-radius:18px;
-  background:#fff;line-height:1.6;overflow-wrap:anywhere;
-  box-shadow:0 1px 3px #00000008;
+  max-width:min(82%,460px);padding:12px 15px;
+  border-radius:18px;background:#fff;line-height:1.7;
+  overflow-wrap:anywhere;box-shadow:0 2px 5px #0000000a;
 }
-.me .bubble{background:#dce8dc;border-bottom-right-radius:5px}
+.me .bubble{background:#dce9df;border-bottom-right-radius:5px}
 .them .bubble{border-bottom-left-radius:5px}
-.name{font-size:11px;color:#999;margin:0 0 4px 4px}
-#typing{color:#999;font-size:13px;padding:0 20px 12px}
+.name{font-size:12px;color:#686868;margin:0 0 5px 4px}
+.chat-image{
+  display:block;max-width:100%;max-height:320px;
+  object-fit:contain;border-radius:12px;margin-top:5px;
+}
+#typing{color:#686868;font-size:13px;padding:0 20px 8px}
 footer{
-  position:fixed;bottom:0;left:0;right:0;
-  background:#ffffffed;padding:12px;
-  border-top:1px solid #eee;
+  position:fixed;bottom:0;left:0;right:0;z-index:3;
+  background:#fffffffa;padding:12px;
+  border-top:1px solid #e6e2de;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));
 }
-form{max-width:650px;margin:auto;display:flex;gap:8px}
-input{
-  min-width:0;flex:1;border:1px solid #ddd;border-radius:24px;
-  padding:13px 16px;font-size:16px;outline:none;
+form{
+  max-width:680px;margin:auto;display:flex;
+  align-items:center;gap:8px;
 }
+input[type=text]{
+  min-width:0;flex:1;border:1px solid #c9c7c3;
+  border-radius:24px;padding:13px 16px;font-size:16px;
+  outline:none;background:#fff;color:#292929;
+}
+input[type=text]:focus{border-color:#708a76}
 button{
-  border:0;border-radius:24px;background:#333;color:white;
-  padding:0 20px;font-size:15px;
+  border:0;border-radius:24px;background:#34483a;
+  color:#fff;padding:13px 17px;font-size:15px;
+  cursor:pointer;white-space:nowrap;
 }
-.note{text-align:center;color:#aaa;font-size:10px;margin-top:8px}
+button:active{opacity:.8}
+#imageButton{
+  width:44px;height:44px;padding:0;flex-shrink:0;
+  border:1px solid #d1d1cd;background:#fff;color:#34483a;
+  font-size:22px;
+}
+#imageInput{display:none}
+.note{text-align:center;color:#777;font-size:11px;margin-top:8px}
+#preview{
+  display:none;max-width:680px;margin:0 auto 8px;
+  padding:8px;background:#f1f0ed;border-radius:12px;
+}
+#preview img{max-height:90px;max-width:100px;border-radius:8px}
+#preview button{padding:6px 10px;margin-left:8px}
+footer{box-shadow:0 -3px 12px #00000005}
+body{padding-bottom:110px}
 </style>
 </head>
 <body>
+
 <header>
   <div class="avatar">言</div>
   <div>
@@ -80,58 +101,184 @@ button{
     </div>
   </div>
 </main>
+
 <div id="typing"></div>
 
 <footer>
+  <div id="preview">
+    <img id="previewImage" alt="待傳送圖片">
+    <span>已選擇圖片</span>
+    <button type="button" id="removeImage">取消</button>
+  </div>
+
   <form id="form">
-    <input id="input" placeholder="傳訊息給付彬言…" autocomplete="off">
+    <button type="button" id="imageButton" aria-label="選擇圖片">＋</button>
+    <input id="imageInput" type="file" accept="image/*">
+    <input id="input" type="text"
+      placeholder="傳訊息給付彬言…" autocomplete="off">
     <button type="submit">傳送</button>
   </form>
-  <div class="note">互動角色 · 非本人</div>
+  <div class="note">角色互動 · 非本人</div>
 </footer>
 
 <script>
-const chat=document.getElementById('chat');
-const input=document.getElementById('input');
-const typing=document.getElementById('typing');
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+const typing = document.getElementById('typing');
+const imageInput = document.getElementById('imageInput');
+const preview = document.getElementById('preview');
+const previewImage = document.getElementById('previewImage');
 
-function addMessage(text,me){
-  const row=document.createElement('div');
-  row.className='msg '+(me?'me':'them');
-  const bubble=document.createElement('div');
-  bubble.className='bubble';
-  bubble.textContent=text;
-  row.appendChild(bubble);
+let selectedImage = null;
+
+function scrollDown(){
+  window.scrollTo({
+    top:document.body.scrollHeight,
+    behavior:'smooth'
+  });
+}
+
+function addMessage(text, me, imageData = null){
+  const row = document.createElement('div');
+  row.className = 'msg ' + (me ? 'me' : 'them');
+
+  const content = document.createElement('div');
+
+  if(!me){
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.textContent = '付彬言';
+    content.appendChild(name);
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+
+  if(text){
+    const messageText = document.createElement('div');
+    messageText.textContent = text;
+    bubble.appendChild(messageText);
+  }
+
+  if(imageData){
+    const img = document.createElement('img');
+    img.className = 'chat-image';
+    img.src = imageData;
+    img.alt = '傳送的圖片';
+    bubble.appendChild(img);
+  }
+
+  content.appendChild(bubble);
+  row.appendChild(content);
   chat.appendChild(row);
-  window.scrollTo(0,document.body.scrollHeight);
+  scrollDown();
 }
 
-function reply(text){
-  if(/在嗎|在不在/.test(text)) return '在。怎麼了？';
-  if(/你好|嗨|哈囉/.test(text)) return '嗯，怎麼突然找我？';
-  if(/累|好煩|不開心|難過/.test(text)) return '怎麼了？發生什麼事了？';
-  if(/作業|考試|讀書/.test(text)) return '又是學校的事？哪裡不會？';
-  if(/吃飯|吃了嗎/.test(text)) return '吃了。你呢？';
-  if(/晚安/.test(text)) return '嗯，晚安。明天再聊。';
-  if(/哈哈|笑死/.test(text)) return '有這麼好笑？';
-  if(/喜歡你|喜歡我/.test(text)) return '……你怎麼突然講這個？';
-  if(/謝謝/.test(text)) return '小事。';
-  return '嗯？你繼續說。';
+function reply(text, hasImage){
+  const t = text.trim();
+
+  if(hasImage && !t) return '你傳了什麼？我看看。';
+  if(/在嗎|在不在/.test(t)) return '在。怎麼了？';
+  if(/你好|嗨|哈囉/.test(t)) return '嗯，怎麼突然找我？';
+  if(/幹嘛|在幹嘛|做什麼/.test(t))
+    return '沒幹嘛。怎樣，你有事找我？';
+  if(/累|好煩|不開心|難過|委屈/.test(t))
+    return '怎麼了？發生什麼事了？慢慢說。';
+  if(/哭|想哭/.test(t))
+    return '……先別急。誰惹你了？';
+  if(/作業|考試|讀書/.test(t))
+    return '又是學校的事？哪裡不會？';
+  if(/吃飯|吃了嗎/.test(t))
+    return '吃了。你呢？別又忘記吃飯。';
+  if(/晚安/.test(t)) return '嗯，晚安。明天再聊。';
+  if(/早安|早上好/.test(t)) return '早。今天起得挺早。';
+  if(/哈哈|笑死|好好笑/.test(t))
+    return '有這麼好笑？說來聽聽。';
+  if(/謝謝/.test(t)) return '小事，不用一直謝。';
+  if(/對不起|抱歉/.test(t)) return '嗯，我聽著。你先說清楚。';
+  if(/生氣|討厭/.test(t))
+    return '怎麼了？突然這麼大火氣。';
+  if(/想你|想我/.test(t))
+    return '……怎麼突然講這個？';
+  if(/喜歡你|喜歡我/.test(t))
+    return '……你怎麼突然講這個？';
+  if(/照片|圖片|看看/.test(t) && hasImage)
+    return '看到了。你怎麼突然傳這個？';
+  if(hasImage) return '看到了。這是什麼？跟我說說。';
+  if(t.length <= 4) return '嗯？然後呢？';
+  if(/[？?]$/.test(t)) return '你先說說你的想法，我聽著。';
+  if(/！|!/.test(t)) return '怎麼這麼激動？發生什麼事了？';
+
+  const responses = [
+    '嗯，我聽著。你繼續說。',
+    '然後呢？後來怎麼了？',
+    '是嗎？你怎麼想的？',
+    '……行，你接著說。',
+    '你今天話挺多。繼續，我在聽。',
+    '所以你想跟我說的是這個？'
+  ];
+  return responses[Math.floor(Math.random()*responses.length)];
 }
 
-document.getElementById('form').addEventListener('submit',function(e){
+document.getElementById('imageButton').addEventListener('click',()=>{
+  imageInput.click();
+});
+
+imageInput.addEventListener('change',()=>{
+  const file = imageInput.files[0];
+  if(!file) return;
+
+  if(!file.type.startsWith('image/')){
+    alert('請選擇圖片檔案。');
+    imageInput.value = '';
+    return;
+  }
+
+  if(file.size > 5 * 1024 * 1024){
+    alert('圖片請小於 5 MB。');
+    imageInput.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    selectedImage = reader.result;
+    previewImage.src = selectedImage;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('removeImage').addEventListener('click',()=>{
+  selectedImage = null;
+  imageInput.value = '';
+  preview.style.display = 'none';
+  previewImage.removeAttribute('src');
+});
+
+document.getElementById('form').addEventListener('submit',e=>{
   e.preventDefault();
-  const text=input.value.trim();
-  if(!text)return;
-  addMessage(text,true);
-  input.value='';
-  typing.textContent='付彬言正在輸入…';
+
+  const text = input.value.trim();
+  const image = selectedImage;
+
+  if(!text && !image) return;
+
+  addMessage(text, true, image);
+
+  input.value = '';
+  selectedImage = null;
+  imageInput.value = '';
+  preview.style.display = 'none';
+  previewImage.removeAttribute('src');
+
+  typing.textContent = '付彬言正在輸入…';
+
   setTimeout(()=>{
-    typing.textContent='';
-    addMessage(reply(text),false);
-  },700);
+    typing.textContent = '';
+    addMessage(reply(text, Boolean(image)), false);
+  },700 + Math.random()*500);
 });
 </script>
 </body>
 </html>
-
